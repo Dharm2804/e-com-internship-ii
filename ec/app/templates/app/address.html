@@ -1,0 +1,74 @@
+{% extends "app/base.html" %} {% load static %} {% block title %} Address
+Details {% endblock title %} {% block main %}
+<div class="container my-5">
+  <div class="row">
+    <div class="col-12">
+      <h3 class="mb-4">
+        Welcome <span class="text-capitalize">{{ request.user.username }}</span>
+      </h3>
+    </div>
+  </div>
+  <div class="row">
+    <!-- Sidebar -->
+    <div class="col-12 col-sm-2 border-end mb-3">
+      <ul class="list-unstyled">
+        <li class="d-grid mb-2">
+          <a href="{% url 'profile' %}" class="btn btn-outline-primary"
+            >Profile</a
+          >
+        </li>
+        <li class="d-grid">
+          <a href="{% url 'address' %}" class="btn btn-primary">Address</a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Address List -->
+    <div class="col-12 col-sm-9">
+      <h4 class="mb-3">Address Details for {{ request.user.username }}</h4>
+      {% if addresses %}
+      <div class="row">
+        {% for add in addresses %}
+        <div class="col-12 col-md-6 mb-3">
+          <div class="card shadow-sm">
+            <div class="card-body">
+                <h3 class="card-title mb-3 text-center">Address : {{ forloop.counter }}</h3>
+              <ul class="list-unstyled mb-0">
+                <li><strong>Name:</strong> {{ add.name }}</li>
+                <li><strong>Locality:</strong> {{ add.locality }}</li>
+                <li><strong>City:</strong> {{ add.city }}</li>
+                <li><strong>State:</strong> {{ add.state }}</li>
+                <li><strong>Zipcode:</strong> {{ add.zipcode }}</li>
+                <li><strong>Mobile:</strong> {{ add.mobile }}</li>
+                <div
+                  class="d-flex justify-content-between align-items-center mt-3"
+                >
+                  <a
+                    href="{% url 'updateaddress' add.id %}"
+                    class="btn btn-success btn-sm"
+                    >Update</a
+                  >
+                  <form
+                    action="{% url 'deleteaddress' add.id %}"
+                    method="post"
+                    onsubmit="return confirm('Are you sure you want to delete this address?');"
+                  >
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger btn-sm">
+                      Delete
+                    </button>
+                  </form>
+                </div>
+              </ul>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p class="text-muted">No addresses available.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock main %}

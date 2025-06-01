@@ -1,0 +1,60 @@
+{% extends "app/base.html" %}
+{% load static %}
+
+{% block title %}
+Login
+{% endblock title %}
+
+{% block main %}
+<div class="container">
+    <div class="row my-5">
+        <div class="col-sm-6 offset-sm-3">
+            <h3>Login</h3>
+            <hr>
+            <form method="post" novalidate class="shadow p-5">
+                {% csrf_token %}
+                
+                {% if messages %}
+                    {% for msg in messages %}
+                    <div class="alert alert-{{ msg.tags }}" role="alert">
+                        {{ msg }}
+                    </div>
+                    {% endfor %}
+                {% endif %}
+
+                <!-- Username Field -->
+                <div class="form-group">
+                    <label for="id_username">Username</label>
+                    {{ form.username }}
+                    {% if form.username.errors %}
+                        <div class="text-danger">
+                            {% for error in form.username.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Password Field -->
+                <div class="form-group">
+                    <label for="id_password">Password</label>
+                    {{ form.password }}
+                    {% if form.password.errors %}
+                        <div class="text-danger">
+                            {% for error in form.password.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <input type="submit" value="Login" class="btn btn-primary">
+                
+                <div class="text-center text-primary fw-bold mt-3">
+                    <small>Don't have an account? <a href="{% url 'customerregistration' %}" class="text-danger">Register Now</a></small>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock main %}

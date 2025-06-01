@@ -1,0 +1,81 @@
+{% extends "app/base.html" %}
+{% load static %}
+
+{% block title %}
+Your Wishlist
+{% endblock title %}
+
+{% block main %}
+<div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold mb-0">Your Wishlist</h2>
+        <span class="badge bg-primary rounded-pill">{{ wishlist_items|length }} item{{ wishlist_items|pluralize }}</span>
+    </div>
+
+    {% if wishlist_items %}
+    <div class="row g-4">
+        {% for item in wishlist_items %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="position-relative">
+                    <a href="{% url 'productdetail' item.product.id %}">
+                        <img src="{{ item.product.product_image.url }}" class="card-img-top" alt="{{ item.product.title }}" style="height: 200px; object-fit: contain;">
+                    </a>
+                    <button class="btn btn-danger btn-sm position-absolute top-0 end-0 m-2 rounded-circle" 
+                            onclick="location.href='{% url 'remove_from_wishlist' item.product.id %}'">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <a href="{% url 'productdetail' item.product.id %}" class="text-decoration-none text-dark">
+                            {{ item.product.title }}
+                        </a>
+                    </h5>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <span class="fw-bold text-primary fs-5">Rs. {{ item.product.discounted_price }}/-</span>
+                            {% if item.product.discounted_price != item.product.selling_price %}
+                            <small class="text-muted text-decoration-line-through ms-2">Rs. {{ item.product.selling_price }}/-</small>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <form method="post" action="{% url 'add_to_cart' item.product.id %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="quantity" value="1">
+                        <button type="submit" class="btn btn-dark w-100 rounded-pill">
+                            <i class="fas fa-shopping-cart me-2"></i>Add to Cart
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="card border-0 shadow-sm text-center py-5">
+        <div class="card-body">
+            <i class="fas fa-heart fa-3x text-muted mb-3"></i>
+            <h4 class="mb-3">Your wishlist is empty</h4>
+            <p class="text-muted mb-4">You haven't added any items to your wishlist yet.</p>
+            <a href="{% url 'home' %}" class="btn btn-primary rounded-pill px-4">
+                <i class="fas fa-store me-2"></i>Browse Products
+            </a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    .card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    .card-title a:hover {
+        color: #0d6efd !important;
+    }
+</style>
+{% endblock main %}
